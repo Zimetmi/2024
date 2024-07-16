@@ -5,14 +5,18 @@
 }
 
 body {
-	background-color: #b5afab;
 	margin: 0;
 	font-family: Helvetica, sans-serif;
 	height: 100%; 
-	background-attachment: fixed;
 	margin: 0;
 	padding: 0;
+	background-image: url(icons/city.jpg);
+	background-repeat: no-repeat; 
+    background-size: cover; 
+    background-attachment: fixed; 
+    background-position: center;
 }
+
 
 .content {
 	max-width: 100%;
@@ -44,6 +48,28 @@ img {
             max-height: 700px;
             width: auto;
         }
+		
+.tyan {
+    position: fixed; /* Фиксируем изображение на экране */
+    left: 50%; /* Центрируем по горизонтали */
+    transform: translateX(-50%); /* Корректируем центрирование */
+    width: auto; /* Ширина автоматически подстраивается */
+    max-width: 100%; /* Ограничиваем максимальную ширину */
+    max-height: 100%; /* Ограничиваем максимальную высоту */
+    z-index: -1; /* Размещаем изображение под другими элементами */
+}
+
+@media (max-width: 768px) {
+    .tyan {
+        height: auto; /* Автоматическая высота на мобильных устройствах */
+        width: 100%; /* Ширина 100% экрана */
+        max-height: none; /* Отменяем ограничение высоты */
+        bottom: 0; /* Располагаем внизу экрана */
+        left: 50%; /* Центрируем по горизонтали */
+        transform: translateX(-50%); /* Корректируем центрирование */
+    }
+}
+
 /*СТАРЫЕ СТИЛИ. Сохранил на случай, если что-то отвалится*/
 
 /*Таблица */
@@ -57,9 +83,7 @@ img {
 .table_blur td {border: 1px solid #e3eef7; padding: 15px 20px; position: relative; transition: all 0.5s ease;}*/
 
 
-/*Для картинок на заднем плане. Для Анимау не нужен
-.muzhik{position: fixed; bottom: 0; height:70%;  width:auto; right:5%;}
-.tyan{position: fixed;  bottom: 0; height:70%; width:auto; right:-2%;}*/
+
 
 /*Для текста "СМОТР В 11:50 на вкладках. Для анимау может быть не нужно.
 h3 {color: white;}*/

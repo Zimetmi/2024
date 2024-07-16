@@ -102,13 +102,18 @@ table {
 .tab {
     overflow: hidden;
     border: 1px solid #ccc;
-    background-color: #f1f1f1;
+    background-color: #000000;
     }
 
 .tablinks {
     font-weight: bold;
     font-size: 1.2em;
+	color: white;
     }
+
+.tablinks a {
+	color: white;
+}
 
 .tab button {
     background-color: inherit;
