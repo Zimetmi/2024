@@ -8,7 +8,7 @@ body {
 	margin: 0;
 	font-family: Helvetica, sans-serif;
 	padding: 0;
-	background-image: url(icons/city.jpg);
+	background-image: url(icons/background.jpg);
 	background-repeat: no-repeat; 
     background-size: cover; 
     background-attachment: fixed; 
@@ -45,7 +45,7 @@ img {
 		
 .tyan {
     position: fixed; /* Фиксируем изображение на экране */
-	bottom: 20%; /* Центрируем по вертикали */
+	bottom: 0%; /* Центрируем по вертикали */
     left: 50%; /* Центрируем по горизонтали */
     transform: translateX(-50%); /* Корректируем центрирование */
     width: auto; /* Ширина автоматически подстраивается */
@@ -59,7 +59,7 @@ img {
         height: auto; /* Автоматическая высота на мобильных устройствах */
         width: 100%; /* Ширина 100% экрана */
         max-height: none; /* Отменяем ограничение высоты */
-        bottom: 20%; /* Центрируем по вертикали */
+        bottom: 0%; /* Центрируем по вертикали */
         left: 50%; /* Центрируем по горизонтали */
         transform: translateX(-50%); /* Корректируем центрирование */
     }
