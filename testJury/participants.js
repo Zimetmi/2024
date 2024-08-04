@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Функция для создания выпадающего списка
+    // Функция для создания исходного выпадающего списка (с вариантами от 1 до 5)
     function createSelect(id, dataColumn, dataRow, placeholder) {
         const select = document.createElement('select');
         select.className = 'data-input input-field';
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
         select.setAttribute('data-column', dataColumn);
         select.setAttribute('data-row', dataRow);
 
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= 5; i++) {
             const option = document.createElement('option');
             option.value = i;
             option.textContent = i;
@@ -47,101 +47,204 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         select.addEventListener('input', function () {
-            saveData(select.value, dataColumn, dataRow, 'Mako');
+            saveData(select.value, dataColumn, dataRow, 'MakoDay1');
         });
 
         return select;
     }
 
-    // Функция для создания полей ввода
-    function createInputFields(container, rowId, placeholders) {
-        const parameters = [
-            { label: 'Костюм', column: 'C', placeholder: placeholders['costum'] },
-            { label: 'Схожесть', column: 'D', placeholder: placeholders['shozhest'] },
-            { label: 'Выступление', column: 'E', placeholder: placeholders['vistup'] },
-        ];
+    // Функция для создания нового выпадающего списка (с вариантами от 1 до 3)
+ function createDropdown(id, dataColumn, dataRow, placeholder) {
+    const select = document.createElement('select');
+    select.className = 'data-input input-field';
+    select.id = id;
+    select.setAttribute('data-column', dataColumn);
+    select.setAttribute('data-row', dataRow);
 
-        const inputContainer = document.createElement('div');
-        inputContainer.className = 'input-container';
-
-        parameters.forEach(param => {
-            const inputRow = document.createElement('div');
-            inputRow.className = 'input-row';
-
-            const labelDiv = document.createElement('div');
-            labelDiv.textContent = param.label;
-
-            const selectContainer = document.createElement('div');
-            const select = createSelect(`data${param.column}${rowId}`, param.column, rowId, param.placeholder);
-            selectContainer.appendChild(select);
-
-            inputRow.appendChild(labelDiv);
-            inputRow.appendChild(selectContainer);
-            inputContainer.appendChild(inputRow);
-        });
-
-        const commentRow = document.createElement('div');
-        commentRow.className = 'input-row';
-
-        const commentLabelDiv = document.createElement('div');
-        commentLabelDiv.textContent = 'Комментарий';
-
-        const commentInputDiv = document.createElement('div');
-        const textarea = document.createElement('textarea');
-        textarea.className = 'data-input input-field';
-        textarea.id = `dataE${rowId}`;
-        textarea.setAttribute('data-column', 'F');
-        textarea.setAttribute('data-row', rowId);
-        textarea.placeholder = placeholders['comment'];
-
-        textarea.addEventListener('input', function () {
-            saveData(textarea.value, 'F', rowId, 'Mako');
-        });
-
-        commentInputDiv.appendChild(textarea);
-        commentRow.appendChild(commentLabelDiv);
-        commentRow.appendChild(commentInputDiv);
-        inputContainer.appendChild(commentRow);
-
-        container.appendChild(inputContainer);
+    for (let i = 1; i <= 3; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        if (i == placeholder) {
+            option.selected = true; // Используем переданный placeholder
+        }
+        select.appendChild(option);
     }
 
+    select.addEventListener('input', function () {
+        saveData(select.value, dataColumn, dataRow, 'MakoDay1');
+    });
+
+    return select;
+}
+
+    // Функция для создания чекбоксов
+function createCheckbox(id, dataColumn, dataRow, initialValue) {
+    console.log(`Creating checkbox: id=${id}, initialValue="${initialValue}"`); // Логирование значения
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'data-input';
+    checkbox.id = id;
+    checkbox.setAttribute('data-column', dataColumn);
+    checkbox.setAttribute('data-row', dataRow);
+
+    // Проверка наличия значения в initialValue
+    checkbox.checked = initialValue !== undefined && initialValue !== null && initialValue.trim() !== '';
+
+    checkbox.addEventListener('change', function () {
+        if (checkbox.checked) {
+            saveData('Номинант', dataColumn, dataRow, 'MakoDay1');
+        } else {
+            saveData('', dataColumn, dataRow, 'MakoDay1');
+        }
+    });
+
+    return checkbox;
+}
+
+
+//Функция создания полей ввода
+function createInputFields(container, rowId, placeholders, options = []) {
+    const parameters = [
+        { label: 'Соответствие', column: 'C', placeholder: placeholders['costum'] },
+        { label: 'Качество костюма', column: 'D', placeholder: placeholders['shozhest'] },
+        { label: 'Выход', column: 'E', placeholder: placeholders['vistup'] },
+        { label: 'Аксессуары', column: 'F', placeholder: placeholders['dropdown'] }
+    ];
+
+    const inputContainer = document.createElement('div');
+    inputContainer.className = 'input-container';
+
+    parameters.forEach(param => {
+        const inputRow = document.createElement('div');
+        inputRow.className = 'input-row';
+
+        const labelDiv = document.createElement('div');
+        labelDiv.textContent = param.label;
+
+        const selectContainer = document.createElement('div');
+        const select = (param.column === 'F')
+            ? createDropdown(`data${param.column}${rowId}`, param.column, rowId, param.placeholder)
+            : createSelect(`data${param.column}${rowId}`, param.column, rowId, param.placeholder);
+
+        selectContainer.appendChild(select);
+
+        inputRow.appendChild(labelDiv);
+        inputRow.appendChild(selectContainer);
+        inputContainer.appendChild(inputRow);
+    });
+
+    const commentRow = document.createElement('div');
+    commentRow.className = 'input-row';
+
+    const commentLabelDiv = document.createElement('div');
+    commentLabelDiv.textContent = 'Комментарий';
+
+    const commentInputDiv = document.createElement('div');
+    const textarea = document.createElement('textarea');
+    textarea.className = 'data-input input-field';
+    textarea.id = `dataG${rowId}`;
+    textarea.setAttribute('data-column', 'G');
+    textarea.setAttribute('data-row', rowId);
+    textarea.value = placeholders['comment'] || ''; // Инициализируем значение из placeholders
+
+    textarea.addEventListener('input', function () {
+        saveData(textarea.value, 'G', rowId, 'MakoDay1');
+    });
+
+    commentInputDiv.appendChild(textarea);
+    commentRow.appendChild(commentLabelDiv);
+    commentRow.appendChild(commentInputDiv);
+    inputContainer.appendChild(commentRow);
+
+    const checkboxContainer = document.createElement('div');
+    checkboxContainer.className = 'checkbox-container';
+
+    const checkboxLabels = ['Пошив', 'Крафт', 'Парик', 'Выступление'];
+    const checkboxColumns = ['I', 'J', 'K', 'L'];
+
+    checkboxLabels.forEach((label, index) => {
+        const checkboxRow = document.createElement('div');
+        checkboxRow.className = 'input-row';
+
+        const labelDiv = document.createElement('div');
+        labelDiv.textContent = label;
+
+        const checkbox = createCheckbox(`data${checkboxColumns[index]}${rowId}`, checkboxColumns[index], rowId, placeholders.checkboxes[index]);
+
+        checkboxRow.appendChild(labelDiv);
+        checkboxRow.appendChild(checkbox);
+        checkboxContainer.appendChild(checkboxRow);
+    });
+
+    inputContainer.appendChild(checkboxContainer);
+
+    container.appendChild(inputContainer);
+}
+
+
+
+
     // Функция для создания панели участника
-    function createParticipantPanel(participant, placeholders) {
-        const panel = document.createElement('div');
-        panel.className = 'panel';
+ function createParticipantPanel(participant, placeholders) {
+    const panel = document.createElement('div');
+    panel.className = 'panel';
 
-        const button = document.createElement('button');
-        button.className = 'accordion';
-        button.textContent = `${participant.id} ${participant.name}`;
+    // Логирование перед созданием панели
+    console.log(`Creating panel for participant ${participant.id}:`, placeholders);
 
-        const imgLink = document.createElement('a');
-        imgLink.href = `card/${participant.img}`;
-        imgLink.className = 'lightzoom';
+    const button = document.createElement('button');
+    button.className = 'accordion';
+    button.textContent = `${participant.id} ${participant.name}`;
 
-        const img = document.createElement('img');
-        img.src = `card/${participant.img}`;
-        img.className = 'thumbnail';
+    const imgLink = document.createElement('a');
+    imgLink.href = `card/${participant.img}`;
+    imgLink.className = 'lightzoom';
 
-        imgLink.appendChild(img);
-        panel.appendChild(imgLink);
+    const img = document.createElement('img');
+    img.src = `card/${participant.img}`;
+    img.className = 'thumbnail';
 
-        const inputFieldsDiv = document.createElement('div');
-        inputFieldsDiv.id = `inputFields${participant.id}`;
-        inputFieldsDiv.className = 'input-fields';
+    imgLink.appendChild(img);
+    panel.appendChild(imgLink);
 
-        panel.appendChild(inputFieldsDiv);
+    const inputFieldsDiv = document.createElement('div');
+    inputFieldsDiv.id = `inputFields${participant.id}`;
+    inputFieldsDiv.className = 'input-fields';
 
-        createInputFields(inputFieldsDiv, participant.row, placeholders);
+    panel.appendChild(inputFieldsDiv);
 
-        return { button, panel };
+    createInputFields(inputFieldsDiv, participant.row, placeholders, participant.options);
+
+    return { button, panel };
+}
+
+    // Загрузка данных и создание панелей участников
+    function renderData(data) {
+        const participants = extractParticipants(data);
+        
+        // Пример использования, можно фильтровать по диапазонам, если нужно
+        const section1Participants = filterParticipantsByRange(participants, section1Range);
+
+        section1Participants.forEach(participant => {
+            const placeholders = {
+                costum: '', // Замените на реальные данные или добавьте в participant
+                shozhest: '',
+                vistup: '',
+                comment: ''
+            };
+            const { button, panel } = createParticipantPanel(participant, placeholders);
+            document.body.appendChild(button);
+            document.body.appendChild(panel);
+        });
     }
 
     // Функция для загрузки данных из Google Sheets с кешированием
-    async function fetchDataWithCache(sheetName = 'Mako', includeParticipants = false) {
+    async function fetchDataWithCache(sheetName = 'MakoDay1', includeParticipants = false) {
         const SHEET_ID = '128bnCwot_ifFV_B5e1Zxi4VrMLIzGyV4X9iBe7JMJMk';
         const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM'; // Замените YOUR_API_KEY на ваш ключ API
-        const RANGE = 'A1:G120';
+        const RANGE = 'A1:L120';
         const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
         const cacheKey = `cachedData_${sheetName}`;
         const cacheTimeKey = `cachedTime_${sheetName}`;
@@ -183,18 +286,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Функция для получения значений placeholder
-    function getPlaceholderValues(data, rowId) {
-        const row = data.values[rowId - 1] || [];
-        return {
-            'costum': row[2] || '',
-            'shozhest': row[3] || '',
-            'vistup': row[4] || '',
-            'comment': row[5] || ''
-        };
-    }
+	function getPlaceholderValues(data, rowId) {
+    console.log(`Getting placeholder values for rowId: ${rowId}`); // Логирование rowId
+
+    const row = data.values[rowId - 1] || []; // Получаем строку, соответствующую rowId
+    console.log(`Row data for rowId ${rowId}:`, row); // Логируем полученную строку
+
+		return {
+			'costum': row[2] || '',      // Значение для соответствия (столбец C)
+			'shozhest': row[3] || '',    // Значение для качества костюма (столбец D)
+			'vistup': row[4] || '',      // Значение для аксессуаров (столбец E)
+			'comment': row[6] || '',     // Значение для комментария (столбец G)
+			'dropdown': row[5] || '',   // Значение для выпадающего списка (столбец F, новый)
+			'checkboxes': [
+				row[8] || '',   // Значение для чекбокса 1 (столбец I)
+				row[9] || '',   // Значение для чекбокса 2 (столбец J)
+				row[10] || '',  // Значение для чекбокса 3 (столбец K)
+				row[11] || ''   // Значение для чекбокса 4 (столбец L)	
+			]
+		};
+	}
 
     // Функция для отображения данных
-    async function renderData(sheetName = 'Mako') {
+    async function renderData(sheetName = 'MakoRes') {
         const { data, participants } = await fetchDataWithCache(sheetName, true);
         
         const section1Container = document.getElementById('section1');
@@ -299,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Функция для сохранения данных
-    async function saveData(value, column, row, sheetName = 'Mako') {
+    async function saveData(value, column, row, sheetName = 'MakoDay1') {
         const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
         const params = new URLSearchParams({
             column: column,
@@ -318,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Инициализация загрузки данных и отображение таблицы
-    renderData('Mako');
+    renderData('MakoDay1');
 
     // Подключение lightzoom после обновления таблицы
     document.addEventListener('tableUpdated', function () {
