@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Функция для создания чекбоксов
 function createCheckbox(id, dataColumn, dataRow, initialValue) {
-    console.log(`Creating checkbox: id=${id}, initialValue="${initialValue}"`); // Логирование значения
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -183,16 +182,10 @@ function createInputFields(container, rowId, placeholders, options = []) {
     container.appendChild(inputContainer);
 }
 
-
-
-
     // Функция для создания панели участника
  function createParticipantPanel(participant, placeholders) {
     const panel = document.createElement('div');
     panel.className = 'panel';
-
-    // Логирование перед созданием панели
-    console.log(`Creating panel for participant ${participant.id}:`, placeholders);
 
     const button = document.createElement('button');
     button.className = 'accordion';
@@ -287,10 +280,8 @@ function createInputFields(container, rowId, placeholders, options = []) {
 
     // Функция для получения значений placeholder
 	function getPlaceholderValues(data, rowId) {
-    console.log(`Getting placeholder values for rowId: ${rowId}`); // Логирование rowId
 
     const row = data.values[rowId - 1] || []; // Получаем строку, соответствующую rowId
-    console.log(`Row data for rowId ${rowId}:`, row); // Логируем полученную строку
 
 		return {
 			'costum': row[2] || '',      // Значение для соответствия (столбец C)
@@ -308,7 +299,7 @@ function createInputFields(container, rowId, placeholders, options = []) {
 	}
 
     // Функция для отображения данных
-    async function renderData(sheetName = 'MakoRes') {
+    async function renderData(sheetName = 'MakoDay1') {
         const { data, participants } = await fetchDataWithCache(sheetName, true);
         
         const section1Container = document.getElementById('section1');
@@ -346,9 +337,6 @@ function createInputFields(container, rowId, placeholders, options = []) {
 
         // Инициализация аккордеонов после загрузки данных и создания панелей участников
         initializeAccordions();
-        
-        // Рендеринг итоговой таблицы с данными
-        renderTable(data);
 
         // Инициализация lightzoom для всех элементов с классом lightzoom после обновления таблицы
         document.dispatchEvent(new Event('tableUpdated'));
@@ -376,41 +364,8 @@ function createInputFields(container, rowId, placeholders, options = []) {
         $('a.lightzoom').lightzoom({ speed: 400, overlayOpacity: 0.5 });
     }
 
-    // Функция для создания ячейки таблицы
-    function createTableCell(cellContent, isLink = false) {
-        const cell = document.createElement('td');
-        if (isLink) {
-            const link = document.createElement('a');
-            link.href = `card/${cellContent}.jpg`;
-            link.textContent = cellContent;
-            link.classList.add('lightzoom'); // Настройка lightzoom
-            cell.appendChild(link);
-        } else {
-            cell.textContent = cellContent;
-        }
-        return cell;
-    }
 
-    // Функция для рендеринга таблицы с данными
-    function renderTable(data) {
-        const tableBody = document.querySelector('#dataTable tbody');
-        if (!tableBody) return;
-
-        tableBody.innerHTML = ''; // Очистка таблицы перед вставкой новых данных
-
-        data.values.forEach((row, rowIndex) => {
-            const newRow = document.createElement('tr');
-            row.forEach((cell, colIndex) => {
-                const isLink = colIndex === 0 && rowIndex > 0;
-                const newCell = createTableCell(cell, isLink);
-                newRow.appendChild(newCell);
-            });
-            tableBody.appendChild(newRow);
-        });
-
-        // Триггерим событие для переподключения lightzoom
-        document.dispatchEvent(new Event('tableUpdated'));
-    }
+ 
 
     // Функция для сохранения данных
     async function saveData(value, column, row, sheetName = 'MakoDay1') {
@@ -425,7 +380,6 @@ function createInputFields(container, rowId, placeholders, options = []) {
         try {
             const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
             const data = await response.json();
-            console.log(data);
         } catch (error) {
             console.error('Error saving data:', error);
         }
@@ -434,8 +388,5 @@ function createInputFields(container, rowId, placeholders, options = []) {
     // Инициализация загрузки данных и отображение таблицы
     renderData('MakoDay1');
 
-    // Подключение lightzoom после обновления таблицы
-    document.addEventListener('tableUpdated', function () {
-        $('a.lightzoom').lightzoom({ speed: 400, overlayOpacity: 0.5 }); // Настройка lightzoom, если используется jQuery
-    });
+
 });

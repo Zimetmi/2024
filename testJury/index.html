@@ -12,6 +12,7 @@
 	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 	<script src="JavaScript.js"></script>
 	<script src="participants.js"></script>
+	<script src="result.js"></script>
 	<script src="lightbox-plus-jquery.js"></script>
 	<script type="text/javascript" src="lightzoom/lightzoom.js"></script>
 	<script type="text/javascript">jQuery('.lightzoom').lightzoom({speed: 400, viewTitle: true});</script>  	
@@ -137,26 +138,19 @@
         </tbody>
     </table></div>
 
-<div id="red" class="tabcontent"><style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
-    <table id="dataTable">
-        <thead>
-            <tr>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table></div>
+<div id="red" class="tabcontent">
+<div id="accordion-container">
+    <div class="accordion" id="accordion1">Одиночное</div>
+    <div class="panel" id="panel1"></div>
+
+    <div class="accordion" id="accordion2">Малое групповое</div>
+    <div class="panel" id="panel2"></div>
+
+    <div class="accordion" id="accordion3">Групповое</div>
+    <div class="panel" id="panel3"></div>
+
+    <div class="accordion" id="accordion4">Спецпризы</div>
+    <div class="panel" id="panel4"></div>
+</div></div>
 </body>
 </html>

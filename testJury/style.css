@@ -4,8 +4,6 @@
 	padding-bottom:10px;
 }
 
-
-
 body {
 	margin: 0;
 	font-family: Helvetica, sans-serif;
@@ -27,13 +25,6 @@ body {
 a {
 	text-decoration: none;
 	color: black;
-}
-/*Для вкладки HELP. Центрирование картинок и создание полупрозрачного фона за ними*/
-#red {
-	margin-left: auto;
-	margin-right: auto; 
-	background-color: rgba(255, 255, 255, 0.5);
-	max-width: 800px;
 }
 
 /*Расположение картинок по центру*/
@@ -120,6 +111,59 @@ textarea {
         left: 50%; /* Центрируем по горизонтали */
         transform: translateX(-50%); /* Корректируем центрирование */
     }
+}
+
+#red {
+	margin-left: auto;
+	margin-right: auto; 
+	background-color: rgba(255, 255, 255, 0.5);
+	max-width: 800px;
+	/* Обертка таблицы для управления прокруткой */
+	.table-container {
+		overflow-x: auto;
+		width: 100%; /* Ширина контейнера таблицы */
+	}
+	.accordion {
+		width: 95%;
+	}
+
+	/* Ограничение ширины таблицы и предотвращение её выхода за пределы контейнера */
+	table {
+		width: 100%;
+		max-width: 100%;
+		border-collapse: collapse;
+	}
+
+	/* Ограничение ширины ячеек и перенос текста */
+	th, td {
+		border: 1px solid #ddd;
+		padding: 5px;
+		text-align: left;
+		word-wrap: break-word; /* Перенос длинных слов */
+		min-width: 30px;
+		max-width: 150px; /* Максимальная ширина ячейки */
+		overflow: hidden; /* Прячем переполняющий текст */
+		text-overflow: ellipsis; /* Добавление многоточия, если текст слишком длинный */
+	}
+
+	/* Добавление отступа для правой стороны в последней ячейке */
+	td:last-child {
+		padding-right: 12px; /* Отступ справа для последней ячейки */
+	}
+
+	/* Фон для заголовков таблицы */
+	th {
+		background-color: #f2f2f2;
+	}
+}
+
+.tableHead {
+    font-weight: bold; /* Жирный шрифт */
+    background-color: #FFB040; /* Цвет фона */
+    text-align: center !important; /* Выравнивание текста по центру */
+	font-size: 20px;
+    /* Дополнительные стили, например, отступы, границы и др. */
+    padding: 8px;
 }
 
 
