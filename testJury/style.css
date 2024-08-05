@@ -64,7 +64,7 @@ img {
 
 .data-input {
   font-size: 16px;
-  margin: 0 0.5em; /* Добавляем небольшой отступ между элементами */
+  margin: 0 0.4em; /* Добавляем небольшой отступ между элементами */
 }
 
 select {
@@ -73,17 +73,27 @@ select {
   margin: 0;
   border: 2px solid #aaa;
   font-size: 16px;
-  padding: 10px;
+  padding: 5px;
   margin-bottom: 10px;
 }
 
 textarea {
-  width: 14em;
+  width: 13em;
   height: 4em;
   font-size: 16px;
-  padding: 10px;
+  padding: 5px;
   margin-bottom: 10px;
   border: 2px solid #aaa;
+}
+
+input[type="checkbox"] {
+  transform: scale(2);
+  margin: 5px;
+}
+
+.checkbox-container{
+	display: flex;
+	
 }
 
 .thumbnail {
