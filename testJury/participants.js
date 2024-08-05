@@ -367,23 +367,45 @@ function createInputFields(container, rowId, placeholders, options = []) {
 
  
 
-    // Функция для сохранения данных
-    async function saveData(value, column, row, sheetName = 'MakoDay1') {
-        const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
-        const params = new URLSearchParams({
-            column: column,
-            row: row,
-            value: value,
-            sheet: sheetName
-        });
+// Функция для сохранения данных
+async function saveData(value, column, row, sheetName = 'MakoDay1') {
+    const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
+    const params = new URLSearchParams({
+        column: column,
+        row: row,
+        value: value,
+        sheet: sheetName
+    });
 
-        try {
-            const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
+    try {
+        const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
+        // Проверяем, что ответ в формате JSON, иначе обрабатываем как текст
+        if (response.headers.get('content-type')?.includes('application/json')) {
             const data = await response.json();
-        } catch (error) {
-            console.error('Error saving data:', error);
+            console.log('Data saved:', data); // Пример вывода для проверки
+        } else {
+            const text = await response.text();
+            console.log('Response text:', text); // Вывод текстового ответа
         }
+    } catch (error) {
+        console.error('Error saving data:', error);
     }
+}
+// Привязка события change к функции сохранения данных
+function attachInputListeners() {
+    const textareas = document.querySelectorAll('textarea.data-input');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('change', function () {
+            saveData(this.value, this.getAttribute('data-column'), this.getAttribute('data-row'), 'MakoDay1');
+        });
+    });
+}
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', function () {
+    // Остальной код для инициализации
+    attachInputListeners();
+});
 
     // Инициализация загрузки данных и отображение таблицы
     renderData('MakoDay1');
