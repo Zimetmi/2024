@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         select.addEventListener('input', function () {
-            saveData(select.value, dataColumn, dataRow, 'odangoDay1');
+            saveData(select.value, dataColumn, dataRow, 'christinaDay1');
         });
 
         return select;
