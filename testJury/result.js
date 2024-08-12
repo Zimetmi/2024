@@ -74,7 +74,7 @@ function createTableFromData(data, panelId) {
 }
 
 // Функция для загрузки данных из Google Sheets с кешированием
-async function fetchDataWithCache(sheetName = 'MakoRes', range = 'A1:L120') {
+async function fetchDataWithCache(sheetName = 'odangoRes', range = 'A1:L120') {
     const SHEET_ID = '128bnCwot_ifFV_B5e1Zxi4VrMLIzGyV4X9iBe7JMJMk';
     const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM'; // Замените YOUR_API_KEY на ваш ключ API
     const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
@@ -120,7 +120,7 @@ async function renderTable() {
     const parts = [];
     for (const range of RANGE_PARTS) {
         try {
-            const data = await fetchDataWithCache('MakoRes', range);
+            const data = await fetchDataWithCache('odangoRes', range);
             if (!data || !data.values) {
                 console.warn(`Нет данных для диапазона ${range}`);
                 continue;
@@ -163,7 +163,7 @@ function initializeAccordions() {
 
 
 // Функция для отображения данных
-async function renderData(sheetName = 'MakoRes') {
+async function renderData(sheetName = 'odangoRes') {
     try {
         // Рендеринг итоговой таблицы с данными
         await renderTable();
@@ -178,5 +178,5 @@ async function renderData(sheetName = 'MakoRes') {
 
 // Инициализация загрузки данных и отображение таблицы
 document.addEventListener('DOMContentLoaded', function() {
-    renderData('MakoRes');
+    renderData('odangoRes');
 });
