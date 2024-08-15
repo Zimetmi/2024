@@ -27,8 +27,8 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const SHEET_ID = '1_p2Wb9MU6VCHkdM0ZZcj7Kjfg-LHK6h_qwdEKztXdds';
     const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM';
-    const TABLE_RANGE = 'Sheet1!A1:B169'; // Укажите правильный диапазон для расписания
-    const ACCORDION_RANGE = 'accordion!A1:B120'; // Укажите правильный диапазон для аккордеона
+    const TABLE_RANGE = 'Day1!A1:B230'; // Укажите правильный диапазон для расписания
+    const ACCORDION_RANGE = 'accordionDay1!A1:B150'; // Укажите правильный диапазон для аккордеона
     const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
 
     const fetchDataWithCache = async (range, cacheKeyPrefix) => {

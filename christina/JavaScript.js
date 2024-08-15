@@ -33,7 +33,7 @@ function openCity(evt, cityName) {
 document.addEventListener('DOMContentLoaded', async function() {
     const SHEET_ID = '1_p2Wb9MU6VCHkdM0ZZcj7Kjfg-LHK6h_qwdEKztXdds'; // ID гугл таблицы
     const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM'; // API ключ для работы с таблицами
-    const RANGE = 'Sheet1!A1:B169'; // Имя страницы и диапазон ячеек
+    const RANGE = 'Day1!A1:B230'; // Имя страницы и диапазон ячеек
     const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
 
     const fetchDataWithCache = async () => {
