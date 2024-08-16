@@ -7,6 +7,7 @@
     border: none;
     text-align: left;
     outline: none;
+    font-size: 1.3em;
     transition: 0.4s;
     }
 	
@@ -24,7 +25,7 @@
 .table_blur {
     background: #f5ffff;
     text-align: left;
-    font-size: 17px;
+    font-size: 1.07em;
     padding-bottom: 150px;
     max-width: 90em;
     border-collapse: collapse;
@@ -82,13 +83,13 @@
 .smort {
     background: linear-gradient(#571508, #f06559) !important;
 	font-weight: bold !important;
-	font-size: 18px !important;
+	font-size: 1.1em !important;
 	text-align: center !important; /* Градиент для плашки СМОТР в расписании  */
     }
 
 .block {
 	font-weight: bold !important;
-	font-size: 18px !important;
+	font-size: 1.1em !important;
 	text-align: center !important;
     background: linear-gradient(#082254, #5c91f2) !important; /* Градиент для плашки БЛОК № в расписании  */
     }
@@ -106,7 +107,7 @@ table {
 
 .tablinks {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 1.2em;
 	color: white;
     }
 
@@ -166,6 +167,6 @@ table {
 		
 .B {
 	font-weight: bold;
-	font-size: 18px;
+	font-size: 1.1em;
 	text-align: center;
 	}
