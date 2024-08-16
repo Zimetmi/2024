@@ -57,13 +57,13 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 1.4em;
+  font-size: 18px;
   margin: 0.7em;
   text-align: center;
 }
 
 .data-input {
-  font-size: 16px;
+  font-size: 18px;
   margin: 0 0.4em; /* Добавляем небольшой отступ между элементами */
 }
 
@@ -78,8 +78,8 @@ select {
 }
 
 textarea {
-  width: 13em;
-  height: 4em;
+  width: 14em;
+  height: 5em;
   font-size: 16px;
   padding: 5px;
   margin-bottom: 10px;
