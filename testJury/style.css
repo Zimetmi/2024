@@ -86,8 +86,8 @@ textarea {
   border: 2px solid #aaa;
 }
 
-html {
-    -webkit-text-size-adjust: 100%;
+input[type="text"], textarea {
+    touch-action: manipulation;
 }
 
 input[type="checkbox"] {
