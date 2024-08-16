@@ -43,7 +43,7 @@ img {
   display: flex;
   padding-bottom: 1.5em;
   justify-content: center;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .input-container {
@@ -80,7 +80,7 @@ select {
 textarea {
   width: 14em;
   height: 5em;
-  font-size: 16px;
+  font-size: 17px;
   padding: 5px;
   margin-bottom: 10px;
   border: 2px solid #aaa;
