@@ -86,6 +86,10 @@ textarea {
   border: 2px solid #aaa;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
 input[type="checkbox"] {
   transform: scale(2);
   margin: 5px;
