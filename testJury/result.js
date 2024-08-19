@@ -74,7 +74,7 @@ function createTableFromData(data, panelId) {
 }
 
 // Функция для загрузки данных из Google Sheets с кешированием
-async function fetchDataWithCache(sheetName = 'odangoRes', range = 'A1:L120') {
+async function fetchDataWithCache(sheetName = 'odangoRes', range = 'A1:H650') {
     const SHEET_ID = '128bnCwot_ifFV_B5e1Zxi4VrMLIzGyV4X9iBe7JMJMk';
     const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM'; // Замените YOUR_API_KEY на ваш ключ API
     const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
@@ -111,10 +111,10 @@ async function fetchDataWithCache(sheetName = 'odangoRes', range = 'A1:L120') {
 // Функция для рендеринга таблицы с данными
 async function renderTable() {
     const RANGE_PARTS = [
-        'A1:H36', // Диапазон для первой части
-        'A1:A2', // Диапазон для второй части
-        'A1:A2', // Диапазон для третьей части
-        'A42:B44'  // Диапазон для четвертой части
+        'A1:H143', // Диапазон для первой части
+        'A145:H210', // Диапазон для второй части
+        'A212:H249', // Диапазон для третьей части
+        'A251:C650'  // Диапазон для четвертой части
     ];
 
     const parts = [];

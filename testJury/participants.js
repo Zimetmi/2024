@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Диапазоны для секций
-    const section1Range = [2, 49];
-    const section2Range = [50, 87];
-    const section3Range = [88, 118];
+    const section1Range = [2, 39];
+    const section2Range = [40, 86];
+    const section3Range = [87, 135];
 	
     // Функция для фильтрации участников по диапазону
     function filterParticipantsByRange(participants, range) {
@@ -237,7 +237,7 @@ function createInputFields(container, rowId, placeholders, options = []) {
     async function fetchDataWithCache(sheetName = 'odangoDay1', includeParticipants = false) {
         const SHEET_ID = '128bnCwot_ifFV_B5e1Zxi4VrMLIzGyV4X9iBe7JMJMk';
         const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM'; // Замените YOUR_API_KEY на ваш ключ API
-        const RANGE = 'A1:L120';
+        const RANGE = 'A1:L150';
         const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
         const cacheKey = `cachedData_${sheetName}`;
         const cacheTimeKey = `cachedTime_${sheetName}`;
