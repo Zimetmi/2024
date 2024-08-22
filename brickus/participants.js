@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Диапазоны для секций
     const section1Range = [2, 37];
-    const section2Range = [38, 83];
-    const section3Range = [84, 119];
+    const section2Range = [38, 82];
+    const section3Range = [83, 119];
 	
     // Функция для фильтрации участников по диапазону
     function filterParticipantsByRange(participants, range) {
