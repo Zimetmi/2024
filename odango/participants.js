@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Диапазоны для секций
-    const section1Range = [2, 37];
-    const section2Range = [38, 82];
-    const section3Range = [83, 119];
+    const section1Range = [2, 35];
+    const section2Range = [36, 67];
+    const section3Range = [68, 119];
 	
     // Функция для фильтрации участников по диапазону
     function filterParticipantsByRange(participants, range) {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         select.addEventListener('input', function () {
-            saveData(select.value, dataColumn, dataRow, 'odangoDay1');
+            saveData(select.value, dataColumn, dataRow, 'odangoDay2');
         });
 
         return select;
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     select.addEventListener('input', function () {
-        saveData(select.value, dataColumn, dataRow, 'odangoDay1');
+        saveData(select.value, dataColumn, dataRow, 'odangoDay2');
     });
 
     return select;
@@ -93,9 +93,9 @@ function createCheckbox(id, dataColumn, dataRow, initialValue) {
 
     checkbox.addEventListener('change', function () {
         if (checkbox.checked) {
-            saveData('Номинант', dataColumn, dataRow, 'odangoDay1');
+            saveData('Номинант', dataColumn, dataRow, 'odangoDay2');
         } else {
-            saveData('', dataColumn, dataRow, 'odangoDay1');
+            saveData('', dataColumn, dataRow, 'odangoDay2');
         }
     });
 
@@ -149,7 +149,7 @@ function createInputFields(container, rowId, placeholders, options = []) {
     textarea.value = placeholders['comment'] || ''; // Инициализируем значение из placeholders
 
     textarea.addEventListener('input', function () {
-        saveData(textarea.value, 'G', rowId, 'odangoDay1');
+        saveData(textarea.value, 'G', rowId, 'odangoDay2');
     });
 
     commentInputDiv.appendChild(textarea);
@@ -234,7 +234,7 @@ function createInputFields(container, rowId, placeholders, options = []) {
     }
 
     // Функция для загрузки данных из Google Sheets с кешированием
-    async function fetchDataWithCache(sheetName = 'odangoDay1', includeParticipants = false) {
+    async function fetchDataWithCache(sheetName = 'odangoDay2', includeParticipants = false) {
         const SHEET_ID = '128bnCwot_ifFV_B5e1Zxi4VrMLIzGyV4X9iBe7JMJMk';
         const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM'; // Замените YOUR_API_KEY на ваш ключ API
         const RANGE = 'A1:L150';
@@ -299,7 +299,7 @@ function createInputFields(container, rowId, placeholders, options = []) {
 	}
 
     // Функция для отображения данных
-    async function renderData(sheetName = 'odangoDay1') {
+    async function renderData(sheetName = 'odangoDay2') {
         const { data, participants } = await fetchDataWithCache(sheetName, true);
         
         const section1Container = document.getElementById('section1');
@@ -368,7 +368,7 @@ function createInputFields(container, rowId, placeholders, options = []) {
  
 
 // Функция для сохранения данных
-async function saveData(value, column, row, sheetName = 'odangoDay1') {
+async function saveData(value, column, row, sheetName = 'odangoDay2') {
     const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
     const params = new URLSearchParams({
         column: column,
@@ -396,7 +396,7 @@ function attachInputListeners() {
     const textareas = document.querySelectorAll('textarea.data-input');
     textareas.forEach(textarea => {
         textarea.addEventListener('change', function () {
-            saveData(this.value, this.getAttribute('data-column'), this.getAttribute('data-row'), 'odangoDay1');
+            saveData(this.value, this.getAttribute('data-column'), this.getAttribute('data-row'), 'odangoDay2');
         });
     });
 }
@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
     // Инициализация загрузки данных и отображение таблицы
-    renderData('odangoDay1');
+    renderData('odangoDay2');
 
 
 });
