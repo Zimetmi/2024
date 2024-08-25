@@ -27,8 +27,8 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const SHEET_ID = '1_p2Wb9MU6VCHkdM0ZZcj7Kjfg-LHK6h_qwdEKztXdds';
     const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM';
-    const TABLE_RANGE = 'Day1!A1:B230'; // Укажите правильный диапазон для расписания
-    const ACCORDION_RANGE = 'accordionDay1!A1:B150'; // Укажите правильный диапазон для аккордеона
+    const TABLE_RANGE = 'Day2!A1:B230'; // Укажите правильный диапазон для расписания
+    const ACCORDION_RANGE = 'accordionDay2!A1:B150'; // Укажите правильный диапазон для аккордеона
     const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
 
     const fetchDataWithCache = async (range, cacheKeyPrefix) => {
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const cell = document.createElement('td');
         if (isLink) {
             const link = document.createElement('a');
-            link.href = `card/${cellContent}.jpg`;
+            link.href = `day2/${cellContent}.jpg`;
             link.textContent = cellContent;
             link.setAttribute('data-lightzoom', ''); // Настройка lightzoom
             cell.appendChild(link);
@@ -117,9 +117,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     };
 
     // Функции для работы с аккордеоном
-    const section1Range = [1, 37];
-    const section2Range = [38, 82];
-    const section3Range = [83, 124];
+    const section1Range = [1, 35];
+    const section2Range = [36, 67];
+    const section3Range = [68, 98];
 
     function filterParticipantsByRange(participants, range) {
         return participants.filter(participant => {
@@ -152,12 +152,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         button.textContent = `${participant.id} ${participant.name}`;
 
         const imgLink = document.createElement('a');
-        imgLink.href = `card/${participant.img}`;
+        imgLink.href = `day2/${participant.img}`;
         imgLink.className = 'lightzoom';
         imgLink.setAttribute('data-lightzoom', ''); // Настройка lightzoom
 
         const img = document.createElement('img');
-        img.src = `card/${participant.img}`;
+        img.src = `day2/${participant.img}`;
         img.className = 'thumbnail';
 
         imgLink.appendChild(img);
