@@ -442,15 +442,7 @@ async function syncDataWithServer(column, row, value, sheetName = 'odangoDay2') 
     }
 }
 
-// Модифицированная функция сохранения данных с использованием локального хранения
-async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
-    saveDataLocally(column, row, value, sheetName);
-    if (navigator.onLine) {
-        await syncDataWithServer(column, row, value, sheetName);
-    }
-}
-
-// Функция для синхронизации всех данных из localStorage
+// Функция синхронизации всех данных из localStorage
 function syncAllData(sheetName = 'odangoDay2') {
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -475,5 +467,22 @@ setInterval(() => {
         syncAllData();
     }
 }, 30000);  // Проверка каждые 30 секунд
+
+// Проверка и синхронизация данных при возвращении на страницу
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && navigator.onLine) {
+        console.log('Страница стала видимой. Синхронизация данных...');
+        syncAllData();
+    }
+});
+
+// Синхронизация при фокусе на странице (например, при восстановлении соединения)
+window.addEventListener('focus', () => {
+    if (navigator.onLine) {
+        console.log('Фокус на странице. Синхронизация данных...');
+        syncAllData();
+    }
+});
+
 
 
