@@ -452,86 +452,7 @@ async function saveDataToIndexedDB(column, row, value, sheetName = 'odangoDay2')
     return transaction.complete;
 }
 
-// Синхронизация всех данных из IndexedDB с сервером
-async function syncAllDataFromIndexedDB() {
-    const db = await openDatabase();
-    const transaction = db.transaction('syncData', 'readonly');
-    const store = transaction.objectStore('syncData');
-
-    const allData = store.getAll();
-
-    allData.onsuccess = async function() {
-        const data = allData.result;
-        for (let item of data) {
-            try {
-                await saveData(item.value, item.column, item.row, item.sheetName);
-                const deleteTransaction = db.transaction('syncData', 'readwrite');
-                const deleteStore = deleteTransaction.objectStore('syncData');
-                deleteStore.delete(item.id);
-            } catch (error) {
-                console.error('Failed to sync data:', error);
-            }
-        }
-    };
-}
-
-// Основная функция для сохранения данных с поддержкой синхронизации
-async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
-    await saveDataToIndexedDB(column, row, value, sheetName);
-
-    if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        try {
-            const registration = await navigator.serviceWorker.ready;
-            await registration.sync.register('sync-data');
-            console.log('Background sync registered');
-        } catch (error) {
-            console.error('Background sync registration failed:', error);
-            if (navigator.onLine) {
-                await syncAllDataFromIndexedDB();
-            }
-        }
-    } else {
-        // Фоллбэк: если Background Sync не поддерживается
-        if (navigator.onLine) {
-            await syncAllDataFromIndexedDB();
-        }
-    }
-}
-
-// Периодическая проверка состояния сети и синхронизация данных
-setInterval(() => {
-    if (navigator.onLine) {
-        console.log('Периодическая проверка: соединение активно. Синхронизация данных...');
-        syncAllDataFromIndexedDB();
-    }
-}, 30000);  // Проверка каждые 30 секунд
-
-// Проверка и синхронизация данных при возвращении на страницу
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && navigator.onLine) {
-        console.log('Страница стала видимой. Синхронизация данных...');
-        syncAllDataFromIndexedDB();
-    }
-});
-
-// Синхронизация при фокусе на странице (например, при восстановлении соединения)
-window.addEventListener('focus', () => {
-    if (navigator.onLine) {
-        console.log('Фокус на странице. Синхронизация данных...');
-        syncAllDataFromIndexedDB();
-    }
-});
-
-// Регистрация Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
-    }).catch(error => {
-        console.error('Service Worker registration failed:', error);
-    });
-}
-
-// Функция для отправки данных на сервер (например, в Google Sheets)
+// Основная функция для сохранения данных
 async function saveData(value, column, row, sheetName = 'odangoDay2') {
     const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
     const params = new URLSearchParams({
@@ -543,14 +464,39 @@ async function saveData(value, column, row, sheetName = 'odangoDay2') {
 
     try {
         const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
-        if (response.headers.get('content-type')?.includes('application/json')) {
-            const data = await response.json();
-            console.log('Data saved:', data);
+        if (response.ok) {
+            console.log('Data sent successfully:', value);
         } else {
-            const text = await response.text();
-            console.log('Response text:', text);
+            throw new Error('Failed to send data');
         }
     } catch (error) {
-        console.error('Error saving data:', error);
+        console.error('Error sending data:', error);
+        // Сохраняем данные локально, если не удалось отправить
+        await saveDataToIndexedDB(column, row, value, sheetName);
+        console.log('Data saved locally for retry:', value);
     }
 }
+// Функция для отправки всех данных из IndexedDB на сервер
+async function sendAllDataFromIndexedDB() {
+    const db = await openDatabase();
+    const transaction = db.transaction('syncData', 'readonly');
+    const store = transaction.objectStore('syncData');
+
+    const allData = await store.getAll();
+
+    for (const item of allData) {
+        try {
+            await saveData(item.value, item.column, item.row, item.sheetName);
+            const deleteTransaction = db.transaction('syncData', 'readwrite');
+            const deleteStore = deleteTransaction.objectStore('syncData');
+            deleteStore.delete(item.id);
+            console.log('Data sent and removed from local store:', item.value);
+        } catch (error) {
+            console.error('Failed to send data:', error);
+        }
+    }
+}
+
+// Привязываем функцию к кнопке
+document.getElementById('retryButton').addEventListener('click', sendAllDataFromIndexedDB);
+
