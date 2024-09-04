@@ -424,8 +424,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-//локальное хранение
-// Функция для локального сохранения данных
+//Попытка обойти пропажу инета
+// Функция для сохранения данных в localStorage
 function saveDataLocally(column, row, value, sheetName = 'odangoDay2') {
     const localDataKey = `localData_${sheetName}_${row}_${column}`;
     localStorage.setItem(localDataKey, value);
@@ -435,7 +435,6 @@ function saveDataLocally(column, row, value, sheetName = 'odangoDay2') {
 async function syncDataWithServer(column, row, value, sheetName = 'odangoDay2') {
     try {
         await saveData(value, column, row, sheetName);
-        // Если данные успешно отправлены, удаляем их из localStorage
         const localDataKey = `localData_${sheetName}_${row}_${column}`;
         localStorage.removeItem(localDataKey);
     } catch (error) {
@@ -451,12 +450,7 @@ async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
     }
 }
 
-// Обработчик события ввода данных с дебаунсингом
-textarea.addEventListener('input', debounce(function () {
-    saveDataWithSync(this.value, 'G', rowId, 'odangoDay2');
-}, 300));
-
-// Функция для синхронизации всех данных из localStorage при восстановлении соединения
+// Функция для синхронизации всех данных из localStorage
 function syncAllData(sheetName = 'odangoDay2') {
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -473,3 +467,13 @@ window.addEventListener('online', () => {
     console.log('Соединение восстановлено. Синхронизация данных...');
     syncAllData();
 });
+
+// Периодическая проверка состояния сети и синхронизация данных
+setInterval(() => {
+    if (navigator.onLine) {
+        console.log('Периодическая проверка: соединение активно. Синхронизация данных...');
+        syncAllData();
+    }
+}, 30000);  // Проверка каждые 30 секунд
+
+
