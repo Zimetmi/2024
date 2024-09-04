@@ -425,35 +425,102 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 //Попытка обойти пропажу инета
-// Функция для сохранения данных в localStorage
-function saveDataLocally(column, row, value, sheetName = 'odangoDay2') {
-    const localDataKey = `localData_${sheetName}_${row}_${column}`;
-    localStorage.setItem(localDataKey, value);
+// Открытие базы данных IndexedDB
+function openDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('SyncDB', 1);
+
+        request.onupgradeneeded = event => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('syncData')) {
+                db.createObjectStore('syncData', { keyPath: 'id' });
+            }
+        };
+
+        request.onsuccess = event => resolve(event.target.result);
+        request.onerror = event => reject(event.target.errorCode);
+    });
 }
 
-// Функция для отправки данных на сервер
-async function syncDataWithServer(column, row, value, sheetName = 'odangoDay2') {
-    try {
-        await saveData(value, column, row, sheetName);
-        const localDataKey = `localData_${sheetName}_${row}_${column}`;
-        localStorage.removeItem(localDataKey);
-    } catch (error) {
-        console.error('Error syncing data:', error);
-    }
+// Сохранение данных в IndexedDB
+async function saveDataToIndexedDB(column, row, value, sheetName = 'odangoDay2') {
+    const db = await openDatabase();
+    const transaction = db.transaction('syncData', 'readwrite');
+    const store = transaction.objectStore('syncData');
+    const id = `${sheetName}_${row}_${column}`;
+    store.put({ id, column, row, value, sheetName });
+    return transaction.complete;
 }
 
-// Функция синхронизации всех данных из localStorage
-function syncAllData(sheetName = 'odangoDay2') {
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith(`localData_${sheetName}`)) {
-            const [_, sheet, row, column] = key.split('_');
-            const value = localStorage.getItem(key);
-            syncDataWithServer(column, row, value, sheetName);
+// Синхронизация всех данных из IndexedDB с сервером
+async function syncAllDataFromIndexedDB() {
+    const db = await openDatabase();
+    const transaction = db.transaction('syncData', 'readonly');
+    const store = transaction.objectStore('syncData');
+
+    const allData = store.getAll();
+
+    allData.onsuccess = async function() {
+        const data = allData.result;
+        for (let item of data) {
+            try {
+                await saveData(item.value, item.column, item.row, item.sheetName);
+                const deleteTransaction = db.transaction('syncData', 'readwrite');
+                const deleteStore = deleteTransaction.objectStore('syncData');
+                deleteStore.delete(item.id);
+            } catch (error) {
+                console.error('Failed to sync data:', error);
+            }
+        }
+    };
+}
+
+// Основная функция для сохранения данных с поддержкой синхронизации
+async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
+    await saveDataToIndexedDB(column, row, value, sheetName);
+
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            await registration.sync.register('sync-data');
+            console.log('Background sync registered');
+        } catch (error) {
+            console.error('Background sync registration failed:', error);
+            if (navigator.onLine) {
+                await syncAllDataFromIndexedDB();
+            }
+        }
+    } else {
+        // Фоллбэк: если Background Sync не поддерживается
+        if (navigator.onLine) {
+            await syncAllDataFromIndexedDB();
         }
     }
 }
 
+// Периодическая проверка состояния сети и синхронизация данных
+setInterval(() => {
+    if (navigator.onLine) {
+        console.log('Периодическая проверка: соединение активно. Синхронизация данных...');
+        syncAllDataFromIndexedDB();
+    }
+}, 30000);  // Проверка каждые 30 секунд
+
+// Проверка и синхронизация данных при возвращении на страницу
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && navigator.onLine) {
+        console.log('Страница стала видимой. Синхронизация данных...');
+        syncAllDataFromIndexedDB();
+    }
+});
+
+// Синхронизация при фокусе на странице (например, при восстановлении соединения)
+window.addEventListener('focus', () => {
+    if (navigator.onLine) {
+        console.log('Фокус на странице. Синхронизация данных...');
+        syncAllDataFromIndexedDB();
+    }
+});
 
 // Регистрация Service Worker
 if ('serviceWorker' in navigator) {
@@ -464,74 +531,26 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// Модифицированная функция сохранения данных с поддержкой Background Sync
-async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
-    saveDataLocally(column, row, value, sheetName);
+// Функция для отправки данных на сервер (например, в Google Sheets)
+async function saveData(value, column, row, sheetName = 'odangoDay2') {
+    const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
+    const params = new URLSearchParams({
+        column: column,
+        row: row,
+        value: value,
+        sheet: sheetName
+    });
 
-    if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        try {
-            const registration = await navigator.serviceWorker.ready;
-            await registration.sync.register('sync-data');
-            console.log('Background sync registered');
-        } catch (error) {
-            console.error('Background sync registration failed:', error);
-            if (navigator.onLine) {
-                await syncDataWithServer(column, row, value, sheetName);
-            }
+    try {
+        const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
+        if (response.headers.get('content-type')?.includes('application/json')) {
+            const data = await response.json();
+            console.log('Data saved:', data);
+        } else {
+            const text = await response.text();
+            console.log('Response text:', text);
         }
-    } else {
-        // Фоллбэк: если Background Sync не поддерживается
-        if (navigator.onLine) {
-            await syncDataWithServer(column, row, value, sheetName);
-        }
+    } catch (error) {
+        console.error('Error saving data:', error);
     }
 }
-
-// Периодическая проверка состояния сети и синхронизация данных
-setInterval(() => {
-    if (navigator.onLine) {
-        console.log('Периодическая проверка: соединение активно. Синхронизация данных...');
-        syncAllData();
-    }
-}, 30000);  // Проверка каждые 30 секунд
-
-// Проверка и синхронизация данных при возвращении на страницу
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && navigator.onLine) {
-        console.log('Страница стала видимой. Синхронизация данных...');
-        syncAllData();
-    }
-});
-
-// Синхронизация при фокусе на странице (например, при восстановлении соединения)
-window.addEventListener('focus', () => {
-    if (navigator.onLine) {
-        console.log('Фокус на странице. Синхронизация данных...');
-        syncAllData();
-    }
-});
-
-
-
-async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
-    saveDataLocally(column, row, value, sheetName);
-
-    if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        try {
-            const registration = await navigator.serviceWorker.ready;
-            await registration.sync.register('sync-data');
-            console.log('Background sync registered');
-        } catch (error) {
-            console.error('Background sync registration failed:', error);
-            if (navigator.onLine) {
-                await syncDataWithServer(column, row, value, sheetName);
-            }
-        }
-    } else {
-        // Фоллбэк: если Background Sync не поддерживается
-        if (navigator.onLine) {
-            await syncDataWithServer(column, row, value, sheetName);
-        }
-    }
-}
-
