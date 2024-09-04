@@ -28,6 +28,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+	//Функция дебаунсинга. Для задержки сохранения комментария, чтобы не терять данные
+	function debounce(func, wait) {
+		let timeout;
+		return function(...args) {
+			const context = this;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => func.apply(context, args), wait);
+		};
+	}
+
     // Функция для создания исходного выпадающего списка (с вариантами от 1 до 5)
     function createSelect(id, dataColumn, dataRow, placeholder) {
         const select = document.createElement('select');
@@ -148,9 +158,9 @@ function createInputFields(container, rowId, placeholders, options = []) {
     textarea.setAttribute('data-row', rowId);
     textarea.value = placeholders['comment'] || ''; // Инициализируем значение из placeholders
 
-    textarea.addEventListener('input', function () {
-        saveData(textarea.value, 'G', rowId, 'odangoDay2');
-    });
+    textarea.addEventListener('input', debounce(function () {
+    saveData(this.value, 'G', rowId, 'odangoDay2');
+	}, 300));  // Задержка 300 мс
 
     commentInputDiv.appendChild(textarea);
     commentRow.appendChild(commentLabelDiv);
@@ -238,7 +248,7 @@ function createInputFields(container, rowId, placeholders, options = []) {
         const SHEET_ID = '128bnCwot_ifFV_B5e1Zxi4VrMLIzGyV4X9iBe7JMJMk';
         const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM'; // Замените YOUR_API_KEY на ваш ключ API
         const RANGE = 'A1:L150';
-        const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
+        const CACHE_EXPIRY = 120000; // 2 минуты в миллисекундах
         const cacheKey = `cachedData_${sheetName}`;
         const cacheTimeKey = `cachedTime_${sheetName}`;
 
@@ -411,4 +421,55 @@ document.addEventListener('DOMContentLoaded', function () {
     renderData('odangoDay2');
 
 
+});
+
+
+//локальное хранение
+// Функция для локального сохранения данных
+function saveDataLocally(column, row, value, sheetName = 'odangoDay2') {
+    const localDataKey = `localData_${sheetName}_${row}_${column}`;
+    localStorage.setItem(localDataKey, value);
+}
+
+// Функция для отправки данных на сервер
+async function syncDataWithServer(column, row, value, sheetName = 'odangoDay2') {
+    try {
+        await saveData(value, column, row, sheetName);
+        // Если данные успешно отправлены, удаляем их из localStorage
+        const localDataKey = `localData_${sheetName}_${row}_${column}`;
+        localStorage.removeItem(localDataKey);
+    } catch (error) {
+        console.error('Error syncing data:', error);
+    }
+}
+
+// Модифицированная функция сохранения данных с использованием локального хранения
+async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
+    saveDataLocally(column, row, value, sheetName);
+    if (navigator.onLine) {
+        await syncDataWithServer(column, row, value, sheetName);
+    }
+}
+
+// Обработчик события ввода данных с дебаунсингом
+textarea.addEventListener('input', debounce(function () {
+    saveDataWithSync(this.value, 'G', rowId, 'odangoDay2');
+}, 300));
+
+// Функция для синхронизации всех данных из localStorage при восстановлении соединения
+function syncAllData(sheetName = 'odangoDay2') {
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith(`localData_${sheetName}`)) {
+            const [_, sheet, row, column] = key.split('_');
+            const value = localStorage.getItem(key);
+            syncDataWithServer(column, row, value, sheetName);
+        }
+    }
+}
+
+// Обработчик события восстановления соединения
+window.addEventListener('online', () => {
+    console.log('Соединение восстановлено. Синхронизация данных...');
+    syncAllData();
 });
