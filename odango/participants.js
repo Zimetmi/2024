@@ -417,48 +417,56 @@ document.addEventListener('DOMContentLoaded', function () {
     attachInputListeners();
 });
 
-    // Инициализация загрузки данных и отображение таблицы
+    
+
+
+//Попытка обойти пропажу инета
+async function sendData(column, row, value, sheetName = 'odangoDay2') {
+        const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
+        const params = new URLSearchParams({
+            column: column,
+            row: row,
+            value: value,
+            sheet: sheetName
+        });
+
+        try {
+            const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
+            if (response.ok) {
+                console.log(`Data sent successfully: Column=${column}, Row=${row}, Value=${value}`);
+            } else {
+                const errorText = await response.text();
+                throw new Error(`Failed to send data. Response status: ${response.status}, Response text: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error sending data:', error);
+        }
+    }
+
+    // Функция для отправки всех данных с полей data-input
+    async function sendAllData() {
+        const inputs = document.querySelectorAll('.data-input');
+        
+        for (const input of inputs) {
+            const column = input.getAttribute('data-column');
+            const row = input.getAttribute('data-row');
+            const value = input.value;
+            
+            await sendData(column, row, value);
+        }
+    }
+
+    // Привязываем функцию к кнопке, но только если кнопка уже существует на странице
+    const sendAllButton = document.getElementById('sendAllButton');
+    if (sendAllButton) {
+        sendAllButton.addEventListener('click', sendAllData);
+        console.log('SendAllButton event listener attached successfully.');
+    } else {
+        console.error('SendAllButton not found on the page.');
+    }
+	
+	// Инициализация загрузки данных и отображение таблицы
     renderData('odangoDay2');
 
 
 });
-
-
-//Попытка обойти пропажу инета
-// Функция для отправки данных на сервер
-async function sendData(column, row, value, sheetName = 'odangoDay2') {
-    const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
-    const params = new URLSearchParams({
-        column: column,
-        row: row,
-        value: value,
-        sheet: sheetName
-    });
-
-    try {
-        const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
-        if (response.ok) {
-            console.log('Data sent successfully:', value);
-        } else {
-            throw new Error('Failed to send data');
-        }
-    } catch (error) {
-        console.error('Error sending data:', error);
-    }
-}
-
-// Функция для отправки всех данных с полей data-input
-async function sendAllData() {
-    const inputs = document.querySelectorAll('.data-input');
-    
-    for (const input of inputs) {
-        const column = input.getAttribute('data-column');
-        const row = input.getAttribute('data-row');
-        const value = input.value;
-        
-        await sendData(column, row, value);
-    }
-}
-
-// Привязываем функцию к кнопке
-document.getElementById('sendAllButton').addEventListener('click', sendAllData);
