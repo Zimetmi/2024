@@ -425,35 +425,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 //Попытка обойти пропажу инета
-// Открытие базы данных IndexedDB
-function openDatabase() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open('SyncDB', 1);
-
-        request.onupgradeneeded = event => {
-            const db = event.target.result;
-            if (!db.objectStoreNames.contains('syncData')) {
-                db.createObjectStore('syncData', { keyPath: 'id' });
-            }
-        };
-
-        request.onsuccess = event => resolve(event.target.result);
-        request.onerror = event => reject(event.target.errorCode);
-    });
-}
-
-// Сохранение данных в IndexedDB
-async function saveDataToIndexedDB(column, row, value, sheetName = 'odangoDay2') {
-    const db = await openDatabase();
-    const transaction = db.transaction('syncData', 'readwrite');
-    const store = transaction.objectStore('syncData');
-    const id = `${sheetName}_${row}_${column}`;
-    store.put({ id, column, row, value, sheetName });
-    return transaction.complete;
-}
-
-// Основная функция для сохранения данных
-async function saveData(value, column, row, sheetName = 'odangoDay2') {
+// Функция для отправки данных на сервер
+async function sendData(column, row, value, sheetName = 'odangoDay2') {
     const url = 'https://script.google.com/macros/s/AKfycbyAXgt-Q1wikBmbkxVUJ-oqKlG4sIXcVMUt40M2GYx4y_s2b5fFvT0V0LaCXn1sSfPwBA/exec';
     const params = new URLSearchParams({
         column: column,
@@ -471,32 +444,21 @@ async function saveData(value, column, row, sheetName = 'odangoDay2') {
         }
     } catch (error) {
         console.error('Error sending data:', error);
-        // Сохраняем данные локально, если не удалось отправить
-        await saveDataToIndexedDB(column, row, value, sheetName);
-        console.log('Data saved locally for retry:', value);
     }
 }
-// Функция для отправки всех данных из IndexedDB на сервер
-async function sendAllDataFromIndexedDB() {
-    const db = await openDatabase();
-    const transaction = db.transaction('syncData', 'readonly');
-    const store = transaction.objectStore('syncData');
 
-    const allData = await store.getAll();
-
-    for (const item of allData) {
-        try {
-            await saveData(item.value, item.column, item.row, item.sheetName);
-            const deleteTransaction = db.transaction('syncData', 'readwrite');
-            const deleteStore = deleteTransaction.objectStore('syncData');
-            deleteStore.delete(item.id);
-            console.log('Data sent and removed from local store:', item.value);
-        } catch (error) {
-            console.error('Failed to send data:', error);
-        }
+// Функция для отправки всех данных с полей data-input
+async function sendAllData() {
+    const inputs = document.querySelectorAll('.data-input');
+    
+    for (const input of inputs) {
+        const column = input.getAttribute('data-column');
+        const row = input.getAttribute('data-row');
+        const value = input.value;
+        
+        await sendData(column, row, value);
     }
 }
 
 // Привязываем функцию к кнопке
-document.getElementById('retryButton').addEventListener('click', sendAllDataFromIndexedDB);
-
+document.getElementById('sendAllButton').addEventListener('click', sendAllData);
