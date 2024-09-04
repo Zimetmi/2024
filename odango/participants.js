@@ -454,11 +454,38 @@ function syncAllData(sheetName = 'odangoDay2') {
     }
 }
 
-// Обработчик события восстановления соединения
-window.addEventListener('online', () => {
-    console.log('Соединение восстановлено. Синхронизация данных...');
-    syncAllData();
-});
+
+// Регистрация Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+    }).catch(error => {
+        console.error('Service Worker registration failed:', error);
+    });
+}
+
+// Модифицированная функция сохранения данных с поддержкой Background Sync
+async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
+    saveDataLocally(column, row, value, sheetName);
+
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            await registration.sync.register('sync-data');
+            console.log('Background sync registered');
+        } catch (error) {
+            console.error('Background sync registration failed:', error);
+            if (navigator.onLine) {
+                await syncDataWithServer(column, row, value, sheetName);
+            }
+        }
+    } else {
+        // Фоллбэк: если Background Sync не поддерживается
+        if (navigator.onLine) {
+            await syncDataWithServer(column, row, value, sheetName);
+        }
+    }
+}
 
 // Периодическая проверка состояния сети и синхронизация данных
 setInterval(() => {
@@ -485,4 +512,26 @@ window.addEventListener('focus', () => {
 });
 
 
+
+async function saveDataWithSync(value, column, row, sheetName = 'odangoDay2') {
+    saveDataLocally(column, row, value, sheetName);
+
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            await registration.sync.register('sync-data');
+            console.log('Background sync registered');
+        } catch (error) {
+            console.error('Background sync registration failed:', error);
+            if (navigator.onLine) {
+                await syncDataWithServer(column, row, value, sheetName);
+            }
+        }
+    } else {
+        // Фоллбэк: если Background Sync не поддерживается
+        if (navigator.onLine) {
+            await syncDataWithServer(column, row, value, sheetName);
+        }
+    }
+}
 
