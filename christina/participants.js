@@ -27,7 +27,17 @@ document.addEventListener('DOMContentLoaded', function () {
             };
         });
     }
-
+	
+	//Функция дебаунсинга. Для задержки сохранения комментария, чтобы не терять данные
+	function debounce(func, wait) {
+		let timeout;
+		return function(...args) {
+			const context = this;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => func.apply(context, args), wait);
+		};
+	}
+	
     // Функция для создания исходного выпадающего списка (с вариантами от 1 до 5)
     function createSelect(id, dataColumn, dataRow, placeholder) {
         const select = document.createElement('select');
@@ -148,9 +158,9 @@ function createInputFields(container, rowId, placeholders, options = []) {
     textarea.setAttribute('data-row', rowId);
     textarea.value = placeholders['comment'] || ''; // Инициализируем значение из placeholders
 
-    textarea.addEventListener('input', function () {
-        saveData(textarea.value, 'G', rowId, 'christinaDay2');
-    });
+    textarea.addEventListener('input', debounce(function () {
+    saveData(this.value, 'G', rowId, 'christinaDay2');
+	}, 300));  // Задержка 300 мс
 
     commentInputDiv.appendChild(textarea);
     commentRow.appendChild(commentLabelDiv);
