@@ -382,7 +382,7 @@ function saveData(value, column, row, sheetName = 'odangoDay2') {
     const cacheKey = `unsavedData_${row}_${column}`;
     
     // Логируем данные, которые сохраняем в кеш
-    console.log(`Сохраняем данные в кеш: ${value}, row: ${row}, column: ${column}, sheet: ${sheetName}`);
+    // console.log(`Сохраняем данные в кеш: ${value}, row: ${row}, column: ${column}, sheet: ${sheetName}`);
     
     // Сохраняем данные в локальное хранилище
     localStorage.setItem(cacheKey, JSON.stringify({
@@ -394,7 +394,7 @@ function saveData(value, column, row, sheetName = 'odangoDay2') {
     
     // Попытка отправить данные на сервер, если интернет есть
     if (navigator.onLine) {
-        console.log('Интернет доступен, пробуем отправить данные...');
+        // console.log('Интернет доступен, пробуем отправить данные...');
         sendDataToServer(cacheKey);
     } else {
         console.warn('Интернет недоступен, данные сохранены в кеш.');
@@ -418,19 +418,19 @@ async function sendDataToServer(cacheKey) {
         sheet: sheet
     });
 
-    console.log(`Отправляем данные на сервер: ${params.toString()}`);
+    // console.log(`Отправляем данные на сервер: ${params.toString()}`);
 
     try {
         const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
 
         if (response.ok) {
-            console.log(`Данные успешно отправлены для ключа ${cacheKey}`);
+           // console.log(`Данные успешно отправлены для ключа ${cacheKey}`);
             localStorage.removeItem(cacheKey); // Удаляем из кеша при успешной отправке
         } else {
-            console.error(`Ошибка отправки данных на сервер для ключа ${cacheKey}: ${response.statusText}`);
+           // console.error(`Ошибка отправки данных на сервер для ключа ${cacheKey}: ${response.statusText}`);
         }
     } catch (error) {
-        console.error('Ошибка сети при отправке данных:', error);
+       // console.error('Ошибка сети при отправке данных:', error);
     }
 }
 
@@ -439,7 +439,7 @@ async function sendAllCachedData() {
     for (let i = 0; i < localStorage.length; i++) {
         const cacheKey = localStorage.key(i);
         if (cacheKey.startsWith('unsavedData_')) {
-            console.log(`Отправляем кешированные данные для ключа: ${cacheKey}`);
+          //  console.log(`Отправляем кешированные данные для ключа: ${cacheKey}`);
             await sendDataToServer(cacheKey);
         }
     }
@@ -447,18 +447,18 @@ async function sendAllCachedData() {
 
 // Обработчик кнопки для отправки кешированных данных
 document.getElementById('sendCacheButton').addEventListener('click', async () => {
-    console.log('Пытаемся отправить все кешированные данные...');
+   // console.log('Пытаемся отправить все кешированные данные...');
     await sendAllCachedData();
 });
 
 // Событие при потере интернета
 window.addEventListener('offline', () => {
-    console.warn('Интернет пропал. Оценки будут сохранены в кеше.');
+   // console.warn('Интернет пропал. Оценки будут сохранены в кеше.');
 });
 
 // Событие при восстановлении интернета
 window.addEventListener('online', () => {
-    console.info('Интернет появился. Вы можете отправить кешированные данные.');
+   // console.info('Интернет появился. Вы можете отправить кешированные данные.');
 });
 
 // Привязка события change к функции сохранения данных
