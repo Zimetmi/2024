@@ -1,0 +1,34 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Замените на вашу ветку, если необходимо
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Укажите версию Node.js, если нужно
+
+      - name: Install dependencies
+        run: npm install  # Здесь можете указать команду для установки зависимостей
+
+      - name: Build project
+        run: npm run build  # Укажите команду для сборки вашего проекта
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Используем токен GitHub
+          publish_dir: ./public  # Путь к папке с вашими статическими файлами
+          custom_domain: zimet.tech  # Укажите ваш домен, если есть
+          google_sheet_id: ${{ secrets.GOOGLE_SHEET_ID }}  # Используем ваш секрет
+          google_api_key: ${{ secrets.GOOGLE_API_KEY }}  # Используем ваш секрет
