@@ -243,9 +243,16 @@ function createInputFields(container, rowId, placeholders, options = []) {
         });
     }
 
+
+	async function getSheetId() {
+		const url = 'https://script.google.com/macros/s/AKfycbwUU6sZ8rsg2oilDLkubnl0pbWV_8-3bJWIVDxQVS3Z4nYHMTnmj4mXOzf1j8D8ld4T/exec'; 
+		const response = await fetch(url);
+		return response.text();
+	}
+
     // Функция для загрузки данных из Google Sheets с кешированием
     async function fetchDataWithCache(sheetName = 'lis', includeParticipants = false) {
-        const SHEET_ID = '128bnCwot_ifFV_B5e1Zxi4VrMLIzGyV4X9iBe7JMJMk';
+        const SHEET_ID = await getSheetId(); // Получаем ID динамически
         const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM'; // Замените YOUR_API_KEY на ваш ключ API
         const RANGE = 'A1:L150';
         const CACHE_EXPIRY = 120000; // 2 минуты в миллисекундах
