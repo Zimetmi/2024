@@ -1,0 +1,17 @@
+name: Fetch Google Sheet Data
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use secret
+        run: echo "Google Sheet ID: ${{ secrets.GOOGLE_SHEET_ID }}"
