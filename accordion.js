@@ -173,10 +173,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         const section1Container = document.getElementById('section1');
         const section2Container = document.getElementById('section2');
         const section3Container = document.getElementById('section3');
+		const section4Container = document.getElementById('section4');
 
         section1Container.innerHTML = '';
         section2Container.innerHTML = '';
         section3Container.innerHTML = '';
+		section4Container.innerHTML = '';
 
         const section1Participants = filterParticipantsByRange(participants, section1Range);
         const section2Participants = filterParticipantsByRange(participants, section2Range);
