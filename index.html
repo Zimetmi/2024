@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8" />
-	<title>Star crew</title>
+	<title>Mocon</title>
 	<base href=".">
     <meta name="Keywords" content="">
     <meta name="Description" content="">
@@ -34,23 +34,26 @@
     <div>
 	<header>
     <!-- Верхняя панель -->
-    <div class="tab">
+    <div class="tab"> <button class="tablinks" onclick="openCity(event, 'One')">Первый блок</button> 
+    <button class="tablinks" onclick="openCity(event, 'Two')">Второй блок</button>
+    <button class="tablinks" onclick="openCity(event, 'Three')">Третий блок</button>
 	<button class="tablinks"><a href="map.jpg" class="lightzoom" data-lightzoom>Карта ДК</a></button>
     <button class="tablinks" onclick="openCity(event, 'table')">Расписание</button> 
+	<button class="tablinks" onclick="openCity(event, 'red')">HELP</button>
     </div></div>
 
 	<img class="tyan"src="icons/girl.png" alt="tyan">
 <!-- Вкладка 1 -->
-<div id="One" class="tabcontent"><h3>1 часть(от 04 до 07) смотр в 11:15. 2 часть(от 08 до 10) смотр в 13:35</h3>
+<div id="One" class="tabcontent"><!--<h3>1 часть(от 04 до 07) смотр в 11:15. 2 часть(от 08 до 10) смотр в 13:35</h3>-->
 <div id="section1"></div>
 	</div>
 
 <!-- Вкладка 2 -->
-<div id="Two" class="tabcontent"><h3>1 часть(от 14 до 16) смотр в 14:40. 2 часть(от 18 до 20) смотр в 16:25</h3>
+<div id="Two" class="tabcontent">
 <div id="section2"></div>
 </div>
 <!-- Вкладка 3 -->
-<div id="Three" class="tabcontent"><h3>1 часть смотр(от 23 до 25) в 17:25. 2 часть(от 27 до 29) смотр в 19:00</h3>
+<div id="Three" class="tabcontent">
 <div id="section3"></div>
 </div>
 
@@ -58,14 +61,8 @@
 <div id="table" class="tabcontent">
 <table id="schedule" class="table_blur">
         <thead>
-		<!-- Заголовки. Не обязательны
-            <tr>
-                <th>Номер</th>
-                <th>Выступающий</th>
-            </tr> -->
         </thead>
         <tbody>
-            <!-- Данные будут загружены сюда через JavaScript -->
         </tbody>
     </table></div>
 <div id="red" class="tabcontent">
