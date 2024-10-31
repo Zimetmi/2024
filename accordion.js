@@ -120,6 +120,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const section1Range = [1, 35];
     const section2Range = [36, 67];
     const section3Range = [68, 98];
+	const section4Range = [68, 119];
 
     function filterParticipantsByRange(participants, range) {
         return participants.filter(participant => {
