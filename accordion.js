@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const section1Range = [1, 35];
     const section2Range = [36, 67];
     const section3Range = [68, 98];
-	const section4Range = [68, 119];
+	const section4Range = [99, 119];
 
     function filterParticipantsByRange(participants, range) {
         return participants.filter(participant => {
@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const section1Participants = filterParticipantsByRange(participants, section1Range);
         const section2Participants = filterParticipantsByRange(participants, section2Range);
         const section3Participants = filterParticipantsByRange(participants, section3Range);
+		const section4Participants = filterParticipantsByRange(participants, section4Range);
 
         section1Participants.forEach(participant => {
             const { button, panel } = createParticipantPanel(participant);
@@ -198,6 +199,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             const { button, panel } = createParticipantPanel(participant);
             section3Container.appendChild(button);
             section3Container.appendChild(panel);
+        });
+		section4Participants.forEach(participant => {
+            const { button, panel } = createParticipantPanel(participant);
+            section4Container.appendChild(button);
+            section4Container.appendChild(panel);
         });
 
         initializeAccordions();
