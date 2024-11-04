@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Диапазоны для секций
-    const section1Range = [2, 38];
-    const section2Range = [39, 84];
-    const section3Range = [85, 90];
+    const section1Range = [2, 14];
+    const section2Range = [15, 27];
+//    const section3Range = [85, 90];
 	
     // Функция для фильтрации участников по диапазону
     function filterParticipantsByRange(participants, range) {
@@ -321,15 +321,15 @@ function createInputFields(container, rowId, placeholders, options = []) {
         
         const section1Container = document.getElementById('section1');
         const section2Container = document.getElementById('section2');
-        const section3Container = document.getElementById('section3');
+//        const section3Container = document.getElementById('section3');
 
         section1Container.innerHTML = '';
         section2Container.innerHTML = '';
-        section3Container.innerHTML = '';
+//        section3Container.innerHTML = '';
 
         const section1Participants = filterParticipantsByRange(participants, section1Range);
         const section2Participants = filterParticipantsByRange(participants, section2Range);
-        const section3Participants = filterParticipantsByRange(participants, section3Range);
+//        const section3Participants = filterParticipantsByRange(participants, section3Range);
 
         section1Participants.forEach(participant => {
             const placeholders = getPlaceholderValues(data, participant.row);
@@ -345,12 +345,12 @@ function createInputFields(container, rowId, placeholders, options = []) {
             section2Container.appendChild(panel);
         });
 
-        section3Participants.forEach(participant => {
-            const placeholders = getPlaceholderValues(data, participant.row);
-            const { button, panel } = createParticipantPanel(participant, placeholders);
-            section3Container.appendChild(button);
-            section3Container.appendChild(panel);
-        });
+//        section3Participants.forEach(participant => {
+//            const placeholders = getPlaceholderValues(data, participant.row);
+//            const { button, panel } = createParticipantPanel(participant, placeholders);
+//            section3Container.appendChild(button);
+//            section3Container.appendChild(panel);
+//        });
 
         // Инициализация аккордеонов после загрузки данных и создания панелей участников
         initializeAccordions();

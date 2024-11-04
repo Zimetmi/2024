@@ -27,8 +27,8 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const SHEET_ID = '1_p2Wb9MU6VCHkdM0ZZcj7Kjfg-LHK6h_qwdEKztXdds';
     const API_KEY = 'AIzaSyBj2W1tUafEz-lBa8CIwiILl28XlmAhyFM';
-    const TABLE_RANGE = 'Day1!A1:B230'; // Укажите правильный диапазон для расписания
-    const ACCORDION_RANGE = 'accordionDay1!A1:B150'; // Укажите правильный диапазон для аккордеона
+    const TABLE_RANGE = 'Day1!A1:B45'; // Укажите правильный диапазон для расписания
+    const ACCORDION_RANGE = 'accordionDay1!A1:B30'; // Укажите правильный диапазон для аккордеона
     const CACHE_EXPIRY = 420000; // 7 минут в миллисекундах
 
     const fetchDataWithCache = async (range, cacheKeyPrefix) => {
@@ -117,10 +117,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     };
 
     // Функции для работы с аккордеоном
-    const section1Range = [1, 37];
-    const section2Range = [38, 70];
-    const section3Range = [71, 100];
-	const section4Range = [101, 118];
+    const section1Range = [2, 14];
+    const section2Range = [15, 27];
+//  const section3Range = [71, 100];
+//	const section4Range = [101, 118];
 
     function filterParticipantsByRange(participants, range) {
         return participants.filter(participant => {
@@ -172,18 +172,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const section1Container = document.getElementById('section1');
         const section2Container = document.getElementById('section2');
-        const section3Container = document.getElementById('section3');
-		const section4Container = document.getElementById('section4');
+//        const section3Container = document.getElementById('section3');
+//		const section4Container = document.getElementById('section4');
 
         section1Container.innerHTML = '';
         section2Container.innerHTML = '';
-        section3Container.innerHTML = '';
-		section4Container.innerHTML = '';
+//		section3Container.innerHTML = '';
+//		section4Container.innerHTML = '';
 
         const section1Participants = filterParticipantsByRange(participants, section1Range);
         const section2Participants = filterParticipantsByRange(participants, section2Range);
-        const section3Participants = filterParticipantsByRange(participants, section3Range);
-		const section4Participants = filterParticipantsByRange(participants, section4Range);
+//        const section3Participants = filterParticipantsByRange(participants, section3Range);
+//		const section4Participants = filterParticipantsByRange(participants, section4Range);
 
         section1Participants.forEach(participant => {
             const { button, panel } = createParticipantPanel(participant);
@@ -197,16 +197,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             section2Container.appendChild(panel);
         });
 
-        section3Participants.forEach(participant => {
-            const { button, panel } = createParticipantPanel(participant);
-            section3Container.appendChild(button);
-            section3Container.appendChild(panel);
-        });
-		section4Participants.forEach(participant => {
-            const { button, panel } = createParticipantPanel(participant);
-            section4Container.appendChild(button);
-            section4Container.appendChild(panel);
-        });
+//        section3Participants.forEach(participant => {
+//          const { button, panel } = createParticipantPanel(participant);
+//          section3Container.appendChild(button);
+//           section3Container.appendChild(panel);
+//        });
+//		section4Participants.forEach(participant => {
+//           const { button, panel } = createParticipantPanel(participant);
+//            section4Container.appendChild(button);
+//            section4Container.appendChild(panel);
+//      });
 
         initializeAccordions();
     }
